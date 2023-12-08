@@ -308,11 +308,11 @@ pub(crate) fn fuse_attr_from_attr(attr: &crate::FileAttr) -> abi::fuse_attr {
         uid: attr.uid,
         gid: attr.gid,
         rdev: attr.rdev,
-        #[cfg(target_os = "macos")]
+        #[cfg(any(target_os = "macos", feature = "abi-7-32"))]
         flags: attr.flags,
         #[cfg(feature = "abi-7-9")]
         blksize: attr.blksize,
-        #[cfg(feature = "abi-7-9")]
+        #[cfg(all(feature = "abi-7-9", not(feature = "abi-7-32")))]
         padding: 0,
     }
 }

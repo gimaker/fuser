@@ -74,8 +74,10 @@ pub const FUSE_KERNEL_MINOR_VERSION: u32 = 28;
 pub const FUSE_KERNEL_MINOR_VERSION: u32 = 29;
 #[cfg(all(feature = "abi-7-30", not(feature = "abi-7-31")))]
 pub const FUSE_KERNEL_MINOR_VERSION: u32 = 30;
-#[cfg(feature = "abi-7-31")]
+#[cfg(all(feature = "abi-7-31", not(feature = "abi-7-32")))]
 pub const FUSE_KERNEL_MINOR_VERSION: u32 = 31;
+#[cfg(feature = "abi-7-32")]
+pub const FUSE_KERNEL_MINOR_VERSION: u32 = 32;
 
 pub const FUSE_ROOT_ID: u64 = 1;
 
@@ -110,8 +112,10 @@ pub struct fuse_attr {
     pub flags: u32, // see chflags(2)
     #[cfg(feature = "abi-7-9")]
     pub blksize: u32,
-    #[cfg(feature = "abi-7-9")]
+    #[cfg(all(feature = "abi-7-9", not(feature = "abi-7-32")))]
     pub padding: u32,
+    #[cfg(feature = "abi-7-32")]
+    pub flags: u32,
 }
 
 #[repr(C)]
@@ -233,6 +237,8 @@ pub mod consts {
     pub const FUSE_NO_OPENDIR_SUPPORT: u32 = 1 << 24; // kernel supports zero-message opendir
     #[cfg(feature = "abi-7-30")]
     pub const FUSE_EXPLICIT_INVAL_DATA: u32 = 1 << 25; // only invalidate cached pages on explicit request
+    #[cfg(feature = "abi-7-32")]
+    pub const FUSE_SUBMOUNTS: u32 = 1 << 27; // kernel supports auto-mounting directory submounts
 
     #[cfg(target_os = "macos")]
     pub const FUSE_ALLOCATE: u32 = 1 << 27;
