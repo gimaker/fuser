@@ -76,8 +76,10 @@ pub const FUSE_KERNEL_MINOR_VERSION: u32 = 29;
 pub const FUSE_KERNEL_MINOR_VERSION: u32 = 30;
 #[cfg(all(feature = "abi-7-31", not(feature = "abi-7-32")))]
 pub const FUSE_KERNEL_MINOR_VERSION: u32 = 31;
-#[cfg(feature = "abi-7-32")]
+#[cfg(all(feature = "abi-7-32", not(feature = "abi-7-33")))]
 pub const FUSE_KERNEL_MINOR_VERSION: u32 = 32;
+#[cfg(feature = "abi-7-33")]
+pub const FUSE_KERNEL_MINOR_VERSION: u32 = 33;
 
 pub const FUSE_ROOT_ID: u64 = 1;
 
@@ -239,6 +241,13 @@ pub mod consts {
     pub const FUSE_EXPLICIT_INVAL_DATA: u32 = 1 << 25; // only invalidate cached pages on explicit request
     #[cfg(feature = "abi-7-32")]
     pub const FUSE_SUBMOUNTS: u32 = 1 << 27; // kernel supports auto-mounting directory submounts
+    #[cfg(feature = "abi-7-33")]
+    // fs kills suid/sgid/cap on write/chown/trunc.
+    // Upon write/truncate suid/sgid is only killed if caller
+    // does not have CAP_FSETID. Additionally upon
+    // write/truncate sgid is killed only if file has group
+    // execute permission. (Same as Linux VFS behavior).
+    pub const FUSE_HANDLE_KILLPRIV_V2: u32 = 1 << 28;
 
     #[cfg(target_os = "macos")]
     pub const FUSE_ALLOCATE: u32 = 1 << 27;
