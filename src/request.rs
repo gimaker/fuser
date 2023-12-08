@@ -596,6 +596,13 @@ impl<'a> Request<'a> {
                     self.reply(),
                 );
             }
+            #[cfg(feature = "abi-7-34")]
+            ll::Operation::SyncFS(_) => {
+                se.filesystem.syncfs(
+                    self,
+                    self.reply(),
+                );
+            }
             #[cfg(target_os = "macos")]
             ll::Operation::SetVolName(x) => {
                 se.filesystem.setvolname(self, x.name(), self.reply());

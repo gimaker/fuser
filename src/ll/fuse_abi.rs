@@ -78,8 +78,10 @@ pub const FUSE_KERNEL_MINOR_VERSION: u32 = 30;
 pub const FUSE_KERNEL_MINOR_VERSION: u32 = 31;
 #[cfg(all(feature = "abi-7-32", not(feature = "abi-7-33")))]
 pub const FUSE_KERNEL_MINOR_VERSION: u32 = 32;
-#[cfg(feature = "abi-7-33")]
+#[cfg(all(feature = "abi-7-33", not(feature = "abi-7-34")))]
 pub const FUSE_KERNEL_MINOR_VERSION: u32 = 33;
+#[cfg(feature = "abi-7-34")]
+pub const FUSE_KERNEL_MINOR_VERSION: u32 = 34;
 
 pub const FUSE_ROOT_ID: u64 = 1;
 
@@ -378,6 +380,8 @@ pub enum fuse_opcode {
     FUSE_LSEEK = 46,
     #[cfg(feature = "abi-7-28")]
     FUSE_COPY_FILE_RANGE = 47,
+    #[cfg(feature = "abi-7-34")]
+    FUSE_SYNCFS = 50,
 
     #[cfg(target_os = "macos")]
     FUSE_SETVOLNAME = 61,
@@ -449,6 +453,8 @@ impl TryFrom<u32> for fuse_opcode {
             46 => Ok(fuse_opcode::FUSE_LSEEK),
             #[cfg(feature = "abi-7-28")]
             47 => Ok(fuse_opcode::FUSE_COPY_FILE_RANGE),
+            #[cfg(feature = "abi-7-34")]
+            50 => Ok(fuse_opcode::FUSE_SYNCFS),
 
             #[cfg(target_os = "macos")]
             61 => Ok(fuse_opcode::FUSE_SETVOLNAME),
@@ -1149,4 +1155,10 @@ pub struct fuse_copy_file_range_in {
     pub off_out: i64,
     pub len: u64,
     pub flags: u64,
+}
+
+#[repr(C)]
+#[derive(Debug, FromBytes, FromZeroes)]
+pub struct fuse_syncfs_in {
+    pub padding: u64,
 }

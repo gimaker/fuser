@@ -62,6 +62,7 @@ abi-7-30 = ["abi-7-29"]
 abi-7-31 = ["abi-7-30"]
 abi-7-32 = ["abi-7-31"]
 abi-7-33 = ["abi-7-32"]
+abi-7-34 = ["abi-7-33"]
 
 [[example]]
 name = "poll"

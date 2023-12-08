@@ -952,6 +952,11 @@ pub trait Filesystem {
         reply.error(ENOSYS);
     }
 
+    fn syncfs(&mut self, _req: &Request<'_>, reply: ReplyEmpty) {
+        debug!("[Not Implemented] syncfs");
+        reply.error(ENOSYS);
+    }
+
     /// macOS only: Rename the volume. Set fuse_init_out.flags during init to
     /// FUSE_VOL_RENAME to enable
     #[cfg(target_os = "macos")]

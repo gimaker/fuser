@@ -1545,6 +1545,15 @@ mod op {
         }
     }
 
+    #[cfg(feature = "abi-7-34")]
+    #[derive(Debug)]
+    pub struct SyncFS<'a> {
+        header: &'a fuse_in_header,
+        arg: &'a fuse_syncfs_in,
+    }
+    #[cfg(feature = "abi-7-34")]
+    impl_request!(SyncFS<'_>);
+
     /// MacOS only: Rename the volume. Set `fuse_init_out.flags` during init to
     /// `FUSE_VOL_RENAME` to enable
     #[cfg(target_os = "macos")]
@@ -1830,6 +1839,11 @@ mod op {
                 header,
                 arg: data.fetch()?,
             }),
+            #[cfg(feature = "abi-7-34")]
+            fuse_opcode::FUSE_SYNCFS => Operation::SyncFS(SyncFS {
+                header,
+                arg: data.fetch()?,
+            }),
 
             #[cfg(target_os = "macos")]
             fuse_opcode::FUSE_SETVOLNAME => Operation::SetVolName(SetVolName {
@@ -1915,6 +1929,8 @@ pub enum Operation<'a> {
     Lseek(Lseek<'a>),
     #[cfg(feature = "abi-7-28")]
     CopyFileRange(CopyFileRange<'a>),
+    #[cfg(feature = "abi-7-34")]
+    SyncFS(SyncFS<'a>),
 
     #[cfg(target_os = "macos")]
     SetVolName(SetVolName<'a>),
@@ -2105,6 +2121,8 @@ impl<'a> fmt::Display for Operation<'a> {
                 x.dest(),
                 x.len()
             ),
+            #[cfg(feature = "abi-7-34")]
+            Operation::SyncFS(x) => write!(f, "SYNCFS"),
 
             #[cfg(target_os = "macos")]
             Operation::SetVolName(x) => write!(f, "SETVOLNAME name {:?}", x.name()),
